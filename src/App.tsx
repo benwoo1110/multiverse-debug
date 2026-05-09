@@ -1,21 +1,38 @@
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from 'react';
+import { Dumps } from './components/dumps';
+import type { Dump } from './data/data';
+import { RoundedCell } from './components/rounded-cell';
+import { Spinner } from '@/components/ui/spinner';
 
-export function App() {
+const pasteUrl = "https://api.pastes.dev/"
+
+export default function App() {
+  const queryParams = new URLSearchParams(window.location.search);
+  const id = queryParams.get('id'); 
+
+  const [dump, setDump] = useState<Dump | null>(null);
+
+  useEffect(() => {
+    fetch(`${pasteUrl}${id}`)
+      .then(res => res.json())
+      .then((data: Dump) => {
+        setDump(data);
+      });
+  }, [id]);
+
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
+    <div className="container mx-auto space-y-4 p-4">
+      <RoundedCell className="dark:!bg-blue-700 !bg-blue-600">
+        <h1 className="text-2xl font-bold text-center text-white">Multiverse Dumps</h1>
+      </RoundedCell>
+      {dump === null ? (
+        <div className="flex justify-center space-x-2">
+          <Spinner className="size-6" />
+          <p className="text-lg">Loading...</p>
         </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
+      ) : (
+        <Dumps dump={dump} />
+      )}
     </div>
   )
 }
-
-export default App
