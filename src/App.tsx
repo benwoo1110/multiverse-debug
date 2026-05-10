@@ -41,7 +41,7 @@ export default function App() {
           {dump === null ? (
             <p className="text-center text-red-500">Error! Dump not found!</p>
           ) : (
-            <Dumps dump={dump} />
+            <Dumps url={pasteUrl + id} dump={dump} />
           )}
         </>
       )}

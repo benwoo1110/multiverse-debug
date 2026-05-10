@@ -28,4 +28,5 @@ export type Dump = {
   server: Server;
   plugins: Plugin[];
   files: File[];
+  createdAt: string;
 }

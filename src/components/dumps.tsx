@@ -7,6 +7,7 @@ import { KeyValueCell } from "./key-value-cell";
 import { FileCell } from "./file-cell";
 
 type Props = {
+  url: string;
   dump: Dump;
 };
 
@@ -37,7 +38,7 @@ const columns: ColumnDef<Plugin>[] = [
   },
 ]
 
-export const Dumps = ({ dump }: Props) => {
+export const Dumps = ({ url, dump }: Props) => {
   return (
     <>
       <IconHeader icon="server" header="Server" />
@@ -63,6 +64,16 @@ export const Dumps = ({ dump }: Props) => {
       {dump.files.map((file) => (
         <FileCell key={file.name} file={file} />
       ))}
+
+      <div className="flex justify-center">
+        <p className="text-sm text-muted-foreground mt-4">
+          <span>This dump was created on {new Date(dump?.createdAt).toLocaleString()}. </span>
+          <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+            Click here
+          </a>
+          <span> to view the raw json data.</span>
+        </p>
+      </div>
     </>
   );
 };
