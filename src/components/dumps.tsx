@@ -42,7 +42,7 @@ export const Dumps = ({ url, dump }: Props) => {
   return (
     <>
       <IconHeader icon="server" header="Server" />
-      <div className="grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-4">
+      <div className="grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-2 text-sm">
         <KeyValueCell title="Name" value={dump.server.name} />
         <KeyValueCell title="Version" value={dump.server.version} />
         <KeyValueCell title="Bukkit Version" value={dump.server.bukkitVersion} />
@@ -53,12 +53,12 @@ export const Dumps = ({ url, dump }: Props) => {
         <KeyValueCell title="Memory" value={dump.server.memory} />
       </div>
     
-      <Separator />
+      <Separator className="my-4" />
 
       <IconHeader icon="blocks" header="Plugins" />
       <DataTable columns={columns} data={dump.plugins} />
 
-      <Separator />
+      <Separator className="my-4" />
 
       <IconHeader icon="file-cog" header="Files" />
       {dump.files.map((file) => (
@@ -66,7 +66,7 @@ export const Dumps = ({ url, dump }: Props) => {
       ))}
 
       <div className="flex justify-center">
-        <p className="text-sm text-muted-foreground mt-4">
+        <p className="text-sm text-muted-foreground text-center mt-4">
           <span>This dump was created on {new Date(dump?.createdAt).toLocaleString()}. </span>
           <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
             Click here

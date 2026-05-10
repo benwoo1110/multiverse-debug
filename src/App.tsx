@@ -1,19 +1,20 @@
 import { useState, useEffect } from 'react';
 import { Dumps } from './components/dumps';
 import type { Dump } from './data/data';
-import { RoundedCell } from './components/rounded-cell';
 import { Spinner } from '@/components/ui/spinner';
-
-const pasteUrl = "https://api.pastes.dev/"
 
 export default function App() {
   const queryParams = new URLSearchParams(window.location.search);
-  const id = queryParams.get('id'); 
+  const id = queryParams.get('id') || ''; 
+  const service = queryParams.get('service') || "pastesdev";
+  
   const [loading, setLoading] = useState(true);
   const [dump, setDump] = useState<Dump | null>(null);
 
+  const pasteUrl = service === "pastesdev" ? `https://api.pastes.dev/${id}` : `https://api.mclo.gs/1/raw/${id}`;
+
   useEffect(() => {
-    fetch(`${pasteUrl}${id}`)
+    fetch(pasteUrl)
       .then(res => res.json())
       .then((data: Dump) => {
         setDump(data);
@@ -21,16 +22,17 @@ export default function App() {
       .finally(() => {
         setLoading(false);
       });
-  }, [id, loading]);
+  }, [loading, pasteUrl]);
 
   return (
-    <div className="container mx-auto space-y-4 p-4">
-      <RoundedCell className="dark:!bg-blue-700 !bg-blue-600 mb-6">
-        <div className="flex items-center justify-center gap-2">
-          <img className="h-8 w-8" src="/multiverse.png" alt="Multiverse Logo" />
-          <h1 className="text-lg sm:text-2xl font-bold text-left text-white my-1">MULTIVERSE DUMPS</h1>
-        </div>
-      </RoundedCell>
+    <div className="container mx-auto space-y-2 p-4">
+
+      {/* Header */}
+      <div className="flex items-center justify-center gap-2 py-2">
+        <img className="h-9 w-9" src="/multiverse.png" alt="Multiverse Logo" />
+        <h1 className="text-lg sm:text-3xl font-bold text-left text-white my-1">MULTIVERSE DUMPS</h1>
+      </div>
+
       {loading ? (
         <div className="flex justify-center space-x-2">
           <Spinner className="size-6" />
@@ -41,11 +43,12 @@ export default function App() {
           {dump === null ? (
             <p className="text-center text-red-500">Error! Dump not found!</p>
           ) : (
-            <Dumps url={pasteUrl + id} dump={dump} />
+            <Dumps url={pasteUrl} dump={dump} />
           )}
         </>
       )}
 
+      {/* Footer */}
       <div className="pt-2 pb-8 space-y-4">
         <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mt-8">
           <a href="https://github.com/sponsors/Multiverse" target="_blank" rel="noopener noreferrer">
