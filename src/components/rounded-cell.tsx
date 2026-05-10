@@ -7,7 +7,7 @@ type Props = {
 
 export const RoundedCell = ({ className, children }: Props) => {
   return (
-    <div className={`${className} rounded-xl border px-4 py-4 bg-card`}>
+    <div className={`${className} rounded-xl border px-3 py-2 bg-card`}>
       {children}
     </div>
   );

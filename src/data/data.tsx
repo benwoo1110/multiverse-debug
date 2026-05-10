@@ -3,6 +3,10 @@ export type Server = {
   version: string;
   bukkitVersion: string;
   onlineMode: boolean;
+  javaVersion: string;
+  operatingSystem: string;
+  uptime: string;
+  memory: string;
 }
 
 export type Plugin = {
