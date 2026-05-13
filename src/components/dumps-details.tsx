@@ -38,7 +38,7 @@ const columns: ColumnDef<Plugin>[] = [
   },
 ]
 
-export const Dumps = ({ url, dump }: Props) => {
+export const DumpsDetails = ({ url, dump }: Props) => {
   return (
     <>
       <IconHeader icon="server" header="Server" />

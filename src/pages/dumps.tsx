@@ -1,28 +1,56 @@
 import { useState, useEffect } from 'react';
-import { Dumps } from './components/dumps';
-import type { Dump } from './data/data';
+import { DumpsDetails } from '../components/dumps-details';
+import type { Dump } from '../data/data';
 import { Spinner } from '@/components/ui/spinner';
+import { useParams, useSearchParams } from 'react-router';
+import { Button } from '@/components/ui/button';
 
-export default function App() {
-  const queryParams = new URLSearchParams(window.location.search);
-  const id = queryParams.get('id') || ''; 
-  const service = queryParams.get('service') || "pastesdev";
+export default function Dumps() {
+  const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const service = searchParams.get('service') || "pastesdev";
   
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [dump, setDump] = useState<Dump | null>(null);
 
-  const pasteUrl = service === "pastesdev" ? `https://api.pastes.dev/${id}` : `https://api.mclo.gs/1/raw/${id}`;
+  const isKnownService = service === "pastesdev" || service === "mclogs";
+  const pasteUrl = isKnownService
+    ? service === "pastesdev"
+      ? `https://api.pastes.dev/${id}`
+      : `https://api.mclo.gs/1/raw/${id}`
+    : null;
 
   useEffect(() => {
+    if (!isKnownService) {
+      setLoading(false);
+      setError("Unknown paste service specified! Only 'pastesdev' (default) and 'mclogs' are supported.");
+      return;
+    }
+
+    if (!pasteUrl) {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
     fetch(pasteUrl)
-      .then(res => res.json())
+      .then(res => {
+        if (res.status === 404) {
+          throw new Error("Paste data id is invalid or expired!");
+        }
+        return res.json();
+      })
       .then((data: Dump) => {
         setDump(data);
+      })
+      .catch(fetchError => {
+        setError(fetchError.message);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [loading, pasteUrl]);
+  }, [isKnownService, pasteUrl]);
 
   return (
     <div className="container mx-auto space-y-2 p-4">
@@ -40,10 +68,14 @@ export default function App() {
         </div>
       ) : (
         <>
-          {dump === null ? (
-            <p className="text-center text-red-500">Error! Dump not found!</p>
+          {pasteUrl === null || dump === null ? (
+            <div className="text-center">
+              <p className="text-red-500">An error occurred while fetching debug data!</p>
+              <p className="text-red-500">{error}</p>
+              <p>Run <Button variant="outline" className="text-green-500 font-mono">/mv dumps</Button> command on your server to generate a new link.</p>
+            </div>
           ) : (
-            <Dumps url={pasteUrl} dump={dump} />
+            <DumpsDetails url={pasteUrl} dump={dump} />
           )}
         </>
       )}
