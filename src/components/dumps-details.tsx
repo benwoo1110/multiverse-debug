@@ -50,7 +50,7 @@ export const DumpsDetails = ({ url, dump }: Props) => {
         <KeyValueCell title="Java Version" value={dump.server.javaVersion} />
         <KeyValueCell title="Operating System" value={dump.server.operatingSystem} />
         <KeyValueCell title="Uptime" value={dump.server.uptime} />
-        <KeyValueCell title="Memory" value={dump.server.memory} />
+        <KeyValueCell title="Memory (MB)" value={dump.server.memory} />
       </div>
     
       <Separator className="my-4" />
